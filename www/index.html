@@ -131,9 +131,10 @@ button:active { transform: scale(0.95); }
 .cell.exclude-hint {
   animation: excludePulse 1s ease-in-out infinite;
 }
+/* 白环+深色描边：与任何区域配色（红/橙/黄/绿/蓝/紫）都区分得开 */
 @keyframes excludePulse {
-  0%, 100% { box-shadow: inset 0 0 0 3px rgba(233,69,96,0.15); }
-  50% { box-shadow: inset 0 0 0 3px rgba(233,69,96,0.9); }
+  0%, 100% { box-shadow: inset 0 0 0 3px rgba(255,255,255,0.35), inset 0 0 0 6px rgba(26,26,46,0.45); }
+  50% { box-shadow: inset 0 0 0 3px rgba(255,255,255,1), inset 0 0 0 6px rgba(26,26,46,0.95), 0 0 12px rgba(255,255,255,0.5); }
 }
 .cell.solo-hint {
   animation: soloPulse 1s ease-in-out infinite;
@@ -1231,17 +1232,17 @@ const TUTORIAL_STEPS = [
       <div class="demo-cell" style="background:#e74c3c">✗</div>
       <div class="demo-cell" style="background:#2ecc71">✗</div>
       <div class="demo-cell" style="background:#3498db">✗</div>
-      <div class="demo-cell" style="background:#3498db">🐱</div>
-      <div class="demo-cell" style="background:#2ecc71">🐱</div>
+      <div class="demo-cell" style="background:#3498db"></div>
+      <div class="demo-cell" style="background:#2ecc71"></div>
       <div class="demo-cell" style="background:#2ecc71">✗</div>
-      <div class="demo-cell" style="background:#2ecc71">✗</div>
-      <div class="demo-cell" style="background:#3498db">✗</div>
-      <div class="demo-cell" style="background:#2ecc71">✗</div>
+      <div class="demo-cell" style="background:#2ecc71"></div>
+      <div class="demo-cell" style="background:#3498db"></div>
+      <div class="demo-cell" style="background:#2ecc71"></div>
       <div class="demo-cell" style="background:#9b59b6">✗</div>
-      <div class="demo-cell" style="background:#9b59b6">🐱</div>
-      <div class="demo-cell" style="background:#9b59b6">✗</div>
+      <div class="demo-cell" style="background:#9b59b6"></div>
+      <div class="demo-cell" style="background:#9b59b6"></div>
     </div>
-    <div class="demo-label"><span class="hl">✗</span> = 找到猫后可以排除的位置（同行/同列/8邻域/同区域）</div>`,
+    <div class="demo-label">找到这只 <span class="hl">🐱</span> 后，<span class="hl">同行 / 同列 / 8 邻域 / 同区域</span> 的格子都能标 ✗，空白格还不能确定</div>`,
     action: 'next'
   },
   {
