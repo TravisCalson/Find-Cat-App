@@ -1,0 +1,11 @@
+{
+  "appId": "com.findcats.game",
+  "appName": "找猫猫",
+  "webDir": "www",
+  "android": {
+    "allowMixedContent": true
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}
