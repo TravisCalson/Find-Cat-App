@@ -1,6 +1,6 @@
 {
   "name": "find-cats",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "找猫猫 - 安卓 APP",
   "main": "index.html",
   "scripts": {

@@ -220,15 +220,16 @@ button:active { transform: scale(0.95); }
   gap: 12px;
   justify-content: center;
   margin-top: 8px;
+  flex-wrap: nowrap;
 }
 #tutorial-box .btn-row .tutorial-btn {
-  padding: 12px 28px;
+  padding: 12px 20px;
   border: none;
   border-radius: 8px;
-  font-size: 1.05rem;
+  font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
-  min-width: 110px;
+  white-space: nowrap;
 }
 #tutorial-box .btn-row .btn-primary {
   background: #ff6b9d;
@@ -237,6 +238,63 @@ button:active { transform: scale(0.95); }
 #tutorial-box .btn-row .btn-secondary {
   background: #3a3a5c;
   color: #ccc;
+}
+#tut-img {
+  margin: 12px auto;
+  display: flex;
+  justify-content: center;
+}
+.demo-grid {
+  display: inline-grid;
+  gap: 3px;
+  border-radius: 10px;
+  padding: 6px;
+  background: rgba(255,255,255,0.06);
+}
+.demo-cell {
+  width: 38px; height: 38px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  border-radius: 5px;
+  position: relative;
+  transition: all 0.3s;
+}
+.demo-cell.hl-row { box-shadow: 0 0 0 2px #ffd700; z-index: 1; }
+.demo-cell.hl-col { box-shadow: 0 0 0 2px #00bfff; z-index: 1; }
+.demo-cell.hl-adj { box-shadow: 0 0 0 2px #ff6b9d; z-index: 1; }
+.demo-cell.hl-solo { box-shadow: 0 0 0 3px #ffd700, 0 0 12px 4px rgba(255,215,0,0.5); z-index: 2; animation: soloPulse 1s ease-in-out infinite; }
+.demo-cell.hl-x { color: #e94560; font-weight: 900; font-size: 22px; }
+.demo-arrow {
+  text-align: center;
+  font-size: 28px;
+  margin: 4px 0;
+  animation: bounce 1s ease-in-out infinite;
+}
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.demo-label {
+  text-align: center;
+  color: #aaa;
+  font-size: 0.82rem;
+  margin-top: 6px;
+  line-height: 1.5;
+}
+.demo-label .hl { color: #ffd700; font-weight: 700; }
+.demo-gesture {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.demo-gesture .gesture-icon {
+  font-size: 32px;
+  animation: tapPulse 1.2s ease-in-out infinite;
+}
+@keyframes tapPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
 }
 #loading-overlay {
   position: fixed;
@@ -330,6 +388,7 @@ body.tutorial-active .footer {
 <div id="tutorial-overlay">
   <div id="tutorial-box">
     <h2 id="tut-title"></h2>
+    <div id="tut-img"></div>
     <p id="tut-text"></p>
     <div class="btn-row">
       <button class="tutorial-btn btn-secondary" id="tut-skip" onclick="skipTutorial()">跳过引导</button>
@@ -1141,26 +1200,129 @@ const TUTORIAL_STEPS = [
   {
     title: '🐱 欢迎来到找猫猫！',
     text: '每个<span class="highlight">颜色区域</span>里都藏着一只猫猫，你的任务是把它们全部找出来！',
+    img: `<div class="demo-grid" style="grid-template-columns:repeat(4,38px)">
+      <div class="demo-cell" style="background:#e74c3c">🐱</div>
+      <div class="demo-cell" style="background:#e74c3c"></div>
+      <div class="demo-cell" style="background:#3498db"></div>
+      <div class="demo-cell" style="background:#3498db">🐱</div>
+      <div class="demo-cell" style="background:#e74c3c"></div>
+      <div class="demo-cell" style="background:#2ecc71">🐱</div>
+      <div class="demo-cell" style="background:#2ecc71"></div>
+      <div class="demo-cell" style="background:#3498db"></div>
+      <div class="demo-cell" style="background:#f39c12"></div>
+      <div class="demo-cell" style="background:#f39c12"></div>
+      <div class="demo-cell" style="background:#2ecc71"></div>
+      <div class="demo-cell" style="background:#9b59b6"></div>
+      <div class="demo-cell" style="background:#f39c12">🐱</div>
+      <div class="demo-cell" style="background:#9b59b6">🐱</div>
+      <div class="demo-cell" style="background:#9b59b6"></div>
+      <div class="demo-cell" style="background:#9b59b6"></div>
+    </div>`,
     action: 'next'
   },
   {
     title: '📋 游戏规则',
     text: '每<span class="highlight">行</span>、每<span class="highlight">列</span>各有一只猫猫<br>每个<span class="highlight">颜色区域</span>各有一只猫猫<br>猫猫周围<span class="highlight">8 格</span>内不能有其他猫猫',
+    img: `<div class="demo-grid" style="grid-template-columns:repeat(4,38px)">
+      <div class="demo-cell hl-row" style="background:#2c3e50">🐱</div>
+      <div class="demo-cell hl-row" style="background:#2c3e50"></div>
+      <div class="demo-cell hl-row" style="background:#2c3e50"></div>
+      <div class="demo-cell hl-row" style="background:#2c3e50"></div>
+      <div class="demo-cell hl-col" style="background:#2c3e50"></div>
+      <div class="demo-cell hl-adj" style="background:#2c3e50"></div>
+      <div class="demo-cell hl-adj" style="background:#2c3e50">🐱</div>
+      <div class="demo-cell hl-adj" style="background:#2c3e50"></div>
+      <div class="demo-cell hl-col" style="background:#2c3e50"></div>
+      <div class="demo-cell hl-adj" style="background:#2c3e50"></div>
+      <div class="demo-cell hl-adj" style="background:#2c3e50"></div>
+      <div class="demo-cell hl-adj" style="background:#2c3e50"></div>
+      <div class="demo-cell hl-col" style="background:#2c3e50"></div>
+      <div class="demo-cell" style="background:#2c3e50"></div>
+      <div class="demo-cell" style="background:#2c3e50"></div>
+      <div class="demo-cell" style="background:#2c3e50"></div>
+    </div>
+    <div class="demo-label">
+      <span class="hl">黄框</span>=同排 &nbsp; <span style="color:#00bfff;font-weight:700">蓝框</span>=同列 &nbsp; <span style="color:#ff6b9d;font-weight:700">粉框</span>=8邻域
+    </div>`,
     action: 'next'
   },
   {
     title: '🔍 看这里！',
     text: '棋盘上有些颜色区域<span class="highlight">只有 1 格</span>——那么猫猫<span class="highlight">一定</span>就藏在那里！先找到这些确定的猫猫。',
+    img: `<div class="demo-grid" style="grid-template-columns:repeat(4,38px)">
+      <div class="demo-cell" style="background:#e74c3c"></div>
+      <div class="demo-cell" style="background:#e74c3c"></div>
+      <div class="demo-cell" style="background:#3498db"></div>
+      <div class="demo-cell" style="background:#3498db"></div>
+      <div class="demo-cell" style="background:#e74c3c"></div>
+      <div class="demo-cell hl-solo" style="background:#2ecc71">🐱</div>
+      <div class="demo-cell" style="background:#3498db"></div>
+      <div class="demo-cell" style="background:#3498db"></div>
+      <div class="demo-cell" style="background:#f39c12"></div>
+      <div class="demo-cell" style="background:#f39c12"></div>
+      <div class="demo-cell" style="background:#3498db"></div>
+      <div class="demo-cell" style="background:#9b59b6"></div>
+      <div class="demo-cell" style="background:#f39c12"></div>
+      <div class="demo-cell" style="background:#9b59b6"></div>
+      <div class="demo-cell" style="background:#9b59b6"></div>
+      <div class="demo-cell" style="background:#9b59b6"></div>
+    </div>
+    <div class="demo-arrow">👇</div>
+    <div class="demo-label"><span class="hl">黄色光圈</span> = 这个区域只有 1 格，猫猫一定在这里！</div>`,
     action: 'next'
   },
   {
     title: '👆 操作方法',
     text: '<span class="highlight">双击</span>格子 = 确认猫猫在这里<br><span class="highlight">单击</span>格子 = 标记 ✗ 排除<br><span class="highlight">按住拖动</span> = 批量标记 ✗',
+    img: `<div style="display:flex;gap:16px;justify-content:center;align-items:flex-start">
+      <div class="demo-gesture">
+        <div class="gesture-icon">👆👆</div>
+        <div class="demo-cell" style="background:#2ecc71;width:52px;height:52px;font-size:26px">🐱</div>
+        <div class="demo-label"><span class="hl">双击</span><br>= 找到猫</div>
+      </div>
+      <div class="demo-gesture">
+        <div class="gesture-icon">👆</div>
+        <div class="demo-cell" style="background:#2c3e50;width:52px;height:52px;font-size:22px" class="hl-x">✗</div>
+        <div class="demo-label"><span class="hl">单击</span><br>= 标记排除</div>
+      </div>
+      <div class="demo-gesture">
+        <div class="gesture-icon">👆〰️</div>
+        <div style="display:flex;gap:3px">
+          <div class="demo-cell" style="background:#2c3e50;width:30px;height:30px;font-size:15px">✗</div>
+          <div class="demo-cell" style="background:#2c3e50;width:30px;height:30px;font-size:15px">✗</div>
+          <div class="demo-cell" style="background:#2c3e50;width:30px;height:30px;font-size:15px">✗</div>
+        </div>
+        <div class="demo-label"><span class="hl">拖动</span><br>= 批量标记</div>
+      </div>
+    </div>`,
     action: 'next'
   },
   {
     title: '🎮 开始练习！',
     text: '这是一个简单的 5×5 关卡。先找到那些<span class="highlight">只有 1 格</span>的颜色区域，双击找到猫猫吧！',
+    img: `<div class="demo-grid" style="grid-template-columns:repeat(5,34px)">
+      <div class="demo-cell" style="background:#e74c3c;width:34px;height:34px;font-size:16px"></div>
+      <div class="demo-cell" style="background:#e74c3c;width:34px;height:34px;font-size:16px"></div>
+      <div class="demo-cell" style="background:#3498db;width:34px;height:34px;font-size:16px"></div>
+      <div class="demo-cell hl-solo" style="background:#2ecc71;width:34px;height:34px;font-size:16px">🐱</div>
+      <div class="demo-cell" style="background:#3498db;width:34px;height:34px;font-size:16px"></div>
+      <div class="demo-cell" style="background:#e74c3c;width:34px;height:34px;font-size:16px"></div>
+      <div class="demo-cell" style="background:#f39c12;width:34px;height:34px;font-size:16px"></div>
+      <div class="demo-cell" style="background:#3498db;width:34px;height:34px;font-size:16px"></div>
+      <div class="demo-cell" style="background:#2ecc71;width:34px;height:34px;font-size:16px"></div>
+      <div class="demo-cell" style="background:#3498db;width:34px;height:34px;font-size:16px"></div>
+      <div class="demo-cell" style="background:#f39c12;width:34px;height:34px;font-size:16px"></div>
+      <div class="demo-cell" style="background:#f39c12;width:34px;height:34px;font-size:16px"></div>
+      <div class="demo-cell" style="background:#9b59b6;width:34px;height:34px;font-size:16px"></div>
+      <div class="demo-cell" style="background:#2ecc71;width:34px;height:34px;font-size:16px"></div>
+      <div class="demo-cell" style="background:#9b59b6;width:34px;height:34px;font-size:16px"></div>
+      <div class="demo-cell" style="background:#1abc9c;width:34px;height:34px;font-size:16px"></div>
+      <div class="demo-cell" style="background:#9b59b6;width:34px;height:34px;font-size:16px"></div>
+      <div class="demo-cell" style="background:#1abc9c;width:34px;height:34px;font-size:16px"></div>
+      <div class="demo-cell" style="background:#1abc9c;width:34px;height:34px;font-size:16px"></div>
+      <div class="demo-cell" style="background:#9b59b6;width:34px;height:34px;font-size:16px"></div>
+    </div>
+    <div class="demo-label">🔍 先找<span class="hl">只有 1 格</span>的颜色区域！</div>`,
     action: 'start'
   }
 ];
@@ -1176,6 +1338,7 @@ function showTutorial() {
 function renderTutStep() {
   const s = TUTORIAL_STEPS[tutStep];
   document.getElementById('tut-title').textContent = s.title;
+  document.getElementById('tut-img').innerHTML = s.img || '';
   document.getElementById('tut-text').innerHTML = s.text;
   const btn = document.getElementById('tut-btn');
   btn.textContent = tutStep < TUTORIAL_STEPS.length - 1 ? '下一步' : '开始游戏！';
