@@ -1201,8 +1201,8 @@ const TUTORIAL_STEPS = [
     title: '🐱 欢迎来到找猫猫！',
     text: '每个<span class="highlight">颜色区域</span>里都藏着一只猫猫，你的任务是把它们全部找出来！',
     img: `<div class="demo-grid" style="grid-template-columns:repeat(4,38px)">
-      <div class="demo-cell" style="background:#e74c3c">🐱</div>
       <div class="demo-cell" style="background:#e74c3c"></div>
+      <div class="demo-cell" style="background:#e74c3c">🐱</div>
       <div class="demo-cell" style="background:#3498db"></div>
       <div class="demo-cell" style="background:#3498db"></div>
       <div class="demo-cell" style="background:#e74c3c"></div>
@@ -1214,36 +1214,34 @@ const TUTORIAL_STEPS = [
       <div class="demo-cell" style="background:#2ecc71"></div>
       <div class="demo-cell" style="background:#3498db"></div>
       <div class="demo-cell" style="background:#2ecc71"></div>
-      <div class="demo-cell" style="background:#9b59b6">🐱</div>
       <div class="demo-cell" style="background:#9b59b6"></div>
+      <div class="demo-cell" style="background:#9b59b6">🐱</div>
       <div class="demo-cell" style="background:#9b59b6"></div>
     </div>`,
     action: 'next'
   },
   {
     title: '📋 游戏规则',
-    text: '每<span class="highlight">行</span>、每<span class="highlight">列</span>各有一只猫猫<br>每个<span class="highlight">颜色区域</span>各有一只猫猫<br>猫猫周围<span class="highlight">8 格</span>内不能有其他猫猫',
+    text: '每<span class="highlight">行</span>、每<span class="highlight">列</span>各有一只猫猫<br>每个<span class="highlight">颜色区域</span>各有一只猫猫<br>猫猫周围<span class="highlight">8 格</span>内不能有其他猫猫<br><span class="highlight">✗</span> = 确定没有猫猫的位置',
     img: `<div class="demo-grid" style="grid-template-columns:repeat(4,38px)">
-      <div class="demo-cell hl-row" style="background:#e74c3c">🐱</div>
-      <div class="demo-cell hl-row" style="background:#e74c3c"></div>
-      <div class="demo-cell hl-row" style="background:#3498db"></div>
-      <div class="demo-cell hl-row" style="background:#3498db"></div>
-      <div class="demo-cell hl-col hl-adj" style="background:#e74c3c"></div>
-      <div class="demo-cell hl-adj" style="background:#2ecc71"></div>
-      <div class="demo-cell hl-adj" style="background:#3498db"></div>
-      <div class="demo-cell hl-col hl-adj" style="background:#3498db">🐱</div>
-      <div class="demo-cell hl-col hl-adj" style="background:#2ecc71"></div>
-      <div class="demo-cell hl-adj" style="background:#2ecc71"></div>
-      <div class="demo-cell hl-adj" style="background:#2ecc71"></div>
-      <div class="demo-cell hl-col hl-adj" style="background:#3498db"></div>
-      <div class="demo-cell hl-col" style="background:#2ecc71"></div>
-      <div class="demo-cell" style="background:#9b59b6"></div>
-      <div class="demo-cell" style="background:#9b59b6"></div>
-      <div class="demo-cell hl-col" style="background:#9b59b6"></div>
+      <div class="demo-cell" style="background:#e74c3c">✗</div>
+      <div class="demo-cell" style="background:#e74c3c">🐱</div>
+      <div class="demo-cell" style="background:#3498db">✗</div>
+      <div class="demo-cell" style="background:#3498db">✗</div>
+      <div class="demo-cell" style="background:#e74c3c">✗</div>
+      <div class="demo-cell" style="background:#2ecc71">✗</div>
+      <div class="demo-cell" style="background:#3498db">✗</div>
+      <div class="demo-cell" style="background:#3498db">🐱</div>
+      <div class="demo-cell" style="background:#2ecc71">🐱</div>
+      <div class="demo-cell" style="background:#2ecc71">✗</div>
+      <div class="demo-cell" style="background:#2ecc71">✗</div>
+      <div class="demo-cell" style="background:#3498db">✗</div>
+      <div class="demo-cell" style="background:#2ecc71">✗</div>
+      <div class="demo-cell" style="background:#9b59b6">✗</div>
+      <div class="demo-cell" style="background:#9b59b6">🐱</div>
+      <div class="demo-cell" style="background:#9b59b6">✗</div>
     </div>
-    <div class="demo-label">
-      <span class="hl">黄框</span>=同排 &nbsp; <span style="color:#00bfff;font-weight:700">蓝框</span>=同列 &nbsp; <span style="color:#ff6b9d;font-weight:700">粉框</span>=8邻域
-    </div>`,
+    <div class="demo-label"><span class="hl">✗</span> = 找到猫后可以排除的位置（同行/同列/8邻域/同区域）</div>`,
     action: 'next'
   },
   {
@@ -1257,23 +1255,23 @@ const TUTORIAL_STEPS = [
       <div class="demo-cell" style="background:#3498db;width:34px;height:34px;font-size:16px"></div>
       <div class="demo-cell" style="background:#e74c3c;width:34px;height:34px;font-size:16px"></div>
       <div class="demo-cell" style="background:#e74c3c;width:34px;height:34px;font-size:16px"></div>
-      <div class="demo-cell" style="background:#3498db;width:34px;height:34px;font-size:16px">🐱</div>
+      <div class="demo-cell hl-solo" style="background:#f39c12;width:34px;height:34px;font-size:16px">🐱</div>
       <div class="demo-cell" style="background:#3498db;width:34px;height:34px;font-size:16px"></div>
       <div class="demo-cell" style="background:#3498db;width:34px;height:34px;font-size:16px"></div>
       <div class="demo-cell" style="background:#2ecc71;width:34px;height:34px;font-size:16px"></div>
-      <div class="demo-cell hl-solo" style="background:#f39c12;width:34px;height:34px;font-size:16px">🐱</div>
+      <div class="demo-cell" style="background:#2ecc71;width:34px;height:34px;font-size:16px"></div>
+      <div class="demo-cell" style="background:#2ecc71;width:34px;height:34px;font-size:16px"></div>
       <div class="demo-cell" style="background:#3498db;width:34px;height:34px;font-size:16px"></div>
+      <div class="demo-cell" style="background:#3498db;width:34px;height:34px;font-size:16px">🐱</div>
+      <div class="demo-cell" style="background:#2ecc71;width:34px;height:34px;font-size:16px"></div>
+      <div class="demo-cell" style="background:#2ecc71;width:34px;height:34px;font-size:16px">🐱</div>
+      <div class="demo-cell" style="background:#2ecc71;width:34px;height:34px;font-size:16px"></div>
       <div class="demo-cell" style="background:#9b59b6;width:34px;height:34px;font-size:16px"></div>
       <div class="demo-cell" style="background:#9b59b6;width:34px;height:34px;font-size:16px"></div>
       <div class="demo-cell" style="background:#2ecc71;width:34px;height:34px;font-size:16px"></div>
       <div class="demo-cell" style="background:#2ecc71;width:34px;height:34px;font-size:16px"></div>
       <div class="demo-cell" style="background:#2ecc71;width:34px;height:34px;font-size:16px"></div>
       <div class="demo-cell" style="background:#9b59b6;width:34px;height:34px;font-size:16px">🐱</div>
-      <div class="demo-cell" style="background:#9b59b6;width:34px;height:34px;font-size:16px"></div>
-      <div class="demo-cell" style="background:#2ecc71;width:34px;height:34px;font-size:16px"></div>
-      <div class="demo-cell" style="background:#2ecc71;width:34px;height:34px;font-size:16px"></div>
-      <div class="demo-cell" style="background:#2ecc71;width:34px;height:34px;font-size:16px">🐱</div>
-      <div class="demo-cell" style="background:#9b59b6;width:34px;height:34px;font-size:16px"></div>
       <div class="demo-cell" style="background:#9b59b6;width:34px;height:34px;font-size:16px"></div>
     </div>
     <div class="demo-arrow">👇</div>
@@ -1291,15 +1289,15 @@ const TUTORIAL_STEPS = [
       </div>
       <div class="demo-gesture">
         <div class="gesture-icon">👆</div>
-        <div class="demo-cell" style="background:#2c3e50;width:52px;height:52px;font-size:22px" class="hl-x">✗</div>
+        <div class="demo-cell" style="background:#2c3e50;width:52px;height:52px;font-size:22px;color:#e94560;font-weight:900">✗</div>
         <div class="demo-label"><span class="hl">单击</span><br>= 标记排除</div>
       </div>
       <div class="demo-gesture">
         <div class="gesture-icon">👆〰️</div>
         <div style="display:flex;gap:3px">
-          <div class="demo-cell" style="background:#2c3e50;width:30px;height:30px;font-size:15px">✗</div>
-          <div class="demo-cell" style="background:#2c3e50;width:30px;height:30px;font-size:15px">✗</div>
-          <div class="demo-cell" style="background:#2c3e50;width:30px;height:30px;font-size:15px">✗</div>
+          <div class="demo-cell" style="background:#2c3e50;width:30px;height:30px;font-size:15px;color:#e94560;font-weight:900">✗</div>
+          <div class="demo-cell" style="background:#2c3e50;width:30px;height:30px;font-size:15px;color:#e94560;font-weight:900">✗</div>
+          <div class="demo-cell" style="background:#2c3e50;width:30px;height:30px;font-size:15px;color:#e94560;font-weight:900">✗</div>
         </div>
         <div class="demo-label"><span class="hl">拖动</span><br>= 批量标记</div>
       </div>
@@ -1317,23 +1315,23 @@ const TUTORIAL_STEPS = [
       <div class="demo-cell" style="background:#3498db;width:34px;height:34px;font-size:16px"></div>
       <div class="demo-cell" style="background:#e74c3c;width:34px;height:34px;font-size:16px"></div>
       <div class="demo-cell" style="background:#e74c3c;width:34px;height:34px;font-size:16px"></div>
-      <div class="demo-cell" style="background:#3498db;width:34px;height:34px;font-size:16px">🐱</div>
+      <div class="demo-cell hl-solo" style="background:#f39c12;width:34px;height:34px;font-size:16px">🐱</div>
       <div class="demo-cell" style="background:#3498db;width:34px;height:34px;font-size:16px"></div>
       <div class="demo-cell" style="background:#3498db;width:34px;height:34px;font-size:16px"></div>
       <div class="demo-cell" style="background:#2ecc71;width:34px;height:34px;font-size:16px"></div>
-      <div class="demo-cell hl-solo" style="background:#f39c12;width:34px;height:34px;font-size:16px">🐱</div>
+      <div class="demo-cell" style="background:#2ecc71;width:34px;height:34px;font-size:16px"></div>
+      <div class="demo-cell" style="background:#2ecc71;width:34px;height:34px;font-size:16px"></div>
       <div class="demo-cell" style="background:#3498db;width:34px;height:34px;font-size:16px"></div>
+      <div class="demo-cell" style="background:#3498db;width:34px;height:34px;font-size:16px">🐱</div>
+      <div class="demo-cell" style="background:#2ecc71;width:34px;height:34px;font-size:16px"></div>
+      <div class="demo-cell" style="background:#2ecc71;width:34px;height:34px;font-size:16px">🐱</div>
+      <div class="demo-cell" style="background:#2ecc71;width:34px;height:34px;font-size:16px"></div>
       <div class="demo-cell" style="background:#9b59b6;width:34px;height:34px;font-size:16px"></div>
       <div class="demo-cell" style="background:#9b59b6;width:34px;height:34px;font-size:16px"></div>
       <div class="demo-cell" style="background:#2ecc71;width:34px;height:34px;font-size:16px"></div>
       <div class="demo-cell" style="background:#2ecc71;width:34px;height:34px;font-size:16px"></div>
       <div class="demo-cell" style="background:#2ecc71;width:34px;height:34px;font-size:16px"></div>
       <div class="demo-cell" style="background:#9b59b6;width:34px;height:34px;font-size:16px">🐱</div>
-      <div class="demo-cell" style="background:#9b59b6;width:34px;height:34px;font-size:16px"></div>
-      <div class="demo-cell" style="background:#2ecc71;width:34px;height:34px;font-size:16px"></div>
-      <div class="demo-cell" style="background:#2ecc71;width:34px;height:34px;font-size:16px"></div>
-      <div class="demo-cell" style="background:#2ecc71;width:34px;height:34px;font-size:16px">🐱</div>
-      <div class="demo-cell" style="background:#9b59b6;width:34px;height:34px;font-size:16px"></div>
       <div class="demo-cell" style="background:#9b59b6;width:34px;height:34px;font-size:16px"></div>
     </div>
     <div class="demo-label">🔍 先找<span class="hl">只有 1 格</span>的颜色区域！</div>`,
