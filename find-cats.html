@@ -121,6 +121,27 @@ button:active { transform: scale(0.95); }
   25% { transform: translateX(-5px); }
   75% { transform: translateX(5px); }
 }
+.cell.hint-flash {
+  animation: hintGlow 1.2s ease-in-out 2;
+}
+@keyframes hintGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255,215,0,0); transform: scale(1); }
+  50% { box-shadow: 0 0 16px 6px rgba(255,215,0,0.85); transform: scale(1.12); }
+}
+.cell.exclude-hint {
+  animation: excludePulse 1s ease-in-out infinite;
+}
+@keyframes excludePulse {
+  0%, 100% { box-shadow: inset 0 0 0 3px rgba(233,69,96,0.15); }
+  50% { box-shadow: inset 0 0 0 3px rgba(233,69,96,0.9); }
+}
+.cell.solo-hint {
+  animation: soloPulse 1s ease-in-out infinite;
+}
+@keyframes soloPulse {
+  0%, 100% { box-shadow: inset 0 0 0 3px rgba(255,215,0,0.2); }
+  50% { box-shadow: inset 0 0 0 3px rgba(255,215,0,1); }
+}
 
 .message {
   margin-top: 16px;
@@ -155,7 +176,6 @@ button:active { transform: scale(0.95); }
 #tutorial-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.55);
   z-index: 100;
   display: none;
   align-items: center;
@@ -168,6 +188,7 @@ button:active { transform: scale(0.95); }
   border-radius: 16px;
   padding: 28px 32px;
   max-width: 420px;
+  width: 90%;
   text-align: center;
   box-shadow: 0 0 60px rgba(255,107,157,0.3);
 }
@@ -194,6 +215,52 @@ button:active { transform: scale(0.95); }
   cursor: pointer;
 }
 #tutorial-box .tutorial-btn:active { transform: scale(0.95); }
+#tutorial-box .btn-row {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 8px;
+}
+#tutorial-box .btn-row .tutorial-btn {
+  padding: 12px 28px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  cursor: pointer;
+  min-width: 110px;
+}
+#tutorial-box .btn-row .btn-primary {
+  background: #ff6b9d;
+  color: #fff;
+}
+#tutorial-box .btn-row .btn-secondary {
+  background: #3a3a5c;
+  color: #ccc;
+}
+#loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  z-index: 5000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+#loading-overlay.show { display: flex; }
+#loading-overlay .spinner {
+  width: 48px; height: 48px;
+  border: 4px solid rgba(255,255,255,0.2);
+  border-top-color: #ff6b9d;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 16px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+#loading-overlay .loading-text {
+  color: #fff; font-size: 1.1rem; font-weight: 700;
+}
 #tutorial-tip {
   position: fixed;
   top: 16px;
@@ -220,6 +287,16 @@ button:active { transform: scale(0.95); }
   margin-right: 8px;
   font-size: 0.85rem;
 }
+body.tutorial-active h1,
+body.tutorial-active .subtitle,
+body.tutorial-active .controls,
+body.tutorial-active .status-bar,
+body.tutorial-active #board,
+body.tutorial-active .message,
+body.tutorial-active .rules,
+body.tutorial-active .footer {
+  display: none;
+}
 </style>
 </head>
 <body>
@@ -244,13 +321,20 @@ button:active { transform: scale(0.95); }
 
 <div class="message" id="message"></div>
 
+<div id="loading-overlay">
+  <div class="spinner"></div>
+  <div class="loading-text">生成猫猫位置中…</div>
+</div>
+
 <div id="tutorial-tip"></div>
 <div id="tutorial-overlay">
   <div id="tutorial-box">
     <h2 id="tut-title"></h2>
     <p id="tut-text"></p>
-    <button class="tutorial-btn" id="tut-btn" onclick="tutorialNext()">下一步</button>
-    <button class="tutorial-btn" id="tut-skip" onclick="skipTutorial()" style="background:#555;margin-left:12px;">跳过引导</button>
+    <div class="btn-row">
+      <button class="tutorial-btn btn-secondary" id="tut-skip" onclick="skipTutorial()">跳过引导</button>
+      <button class="tutorial-btn btn-primary" id="tut-btn" onclick="tutorialNext()">下一步</button>
+    </div>
   </div>
 </div>
 
@@ -469,6 +553,13 @@ function getGridSize(lv) {
   return 5 + Math.floor(Math.random() * 6); // 随机 5~10
 }
 
+function showLoading() {
+  document.getElementById('loading-overlay').classList.add('show');
+}
+function hideLoading() {
+  document.getElementById('loading-overlay').classList.remove('show');
+}
+
 function newGame(lv) {
   clearInterval(gameTimer);
   level = lv;
@@ -489,7 +580,13 @@ function newGame(lv) {
     grid = levelHistory[lv].grid.map(row => [...row]);
     cats = levelHistory[lv].cats.map(row => [...row]);
     regionColors = (levelHistory[lv].regionColors || []).slice();
-  } else {
+    afterGenerate();
+    return;
+  }
+
+  // 生成新关卡：先显示 loading，用 setTimeout 让浏览器渲染遮罩
+  showLoading();
+  setTimeout(() => {
     n = getGridSize(lv);
     cats = null;
     const deadline = Date.now() + 8000;
@@ -503,7 +600,6 @@ function newGame(lv) {
       }
     }
     if (!cats || cats.length !== n) {
-      // 极端兜底：先奇数列后偶数列排列
       cats = Array.from({length: n}, () => Array(n).fill(false));
       const perm = [];
       for (let c = 1; c < n; c += 2) perm.push(c);
@@ -516,8 +612,14 @@ function newGame(lv) {
       cats: cats.map(row => [...row]),
       regionColors: (regionColors || []).slice()
     };
-  }
+    hideLoading();
+    afterGenerate();
+  }, 50);
+}
 
+let onGameReady = null;
+
+function afterGenerate() {
   revealed = Array.from({length: n}, () => Array(n).fill(false));
   noCat = Array.from({length: n}, () => Array(n).fill(false));
 
@@ -530,6 +632,8 @@ function newGame(lv) {
     saveGameState();
   }, 1000);
   saveGameState();
+
+  if (onGameReady) { const fn = onGameReady; onGameReady = null; fn(); }
 }
 
 function generateRegions() {
@@ -813,8 +917,30 @@ function updateCell(i, j) {
   }
 }
 
+function clearExcludeHints() {
+  document.querySelectorAll('.exclude-hint, .solo-hint').forEach(el => {
+    el.classList.remove('exclude-hint', 'solo-hint');
+  });
+}
+
+function highlightSingleCellRegions() {
+  // 找出所有"只有 1 格"的颜色区域，金色脉冲提示这里一定有猫
+  for (let i = 0; i < n; i++) {
+    for (let j = 0; j < n; j++) {
+      const reg = grid[i][j];
+      let count = 0;
+      for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (grid[r][c] === reg) count++;
+      if (count === 1 && !revealed[i][j]) {
+        const cell = document.querySelector(`[data-row="${i}"][data-col="${j}"]`);
+        if (cell) cell.classList.add('solo-hint');
+      }
+    }
+  }
+}
+
 function handleClick(i, j) {
   if (gameOver || revealed[i][j]) return;
+  clearExcludeHints();
   noCat[i][j] = !noCat[i][j];
   updateCell(i, j);
   saveGameState();
@@ -823,6 +949,7 @@ function handleClick(i, j) {
 
 function handleDouble(i, j) {
   if (gameOver || revealed[i][j]) return;
+  clearExcludeHints();
 
   if (cats[i][j]) {
     revealed[i][j] = true;
@@ -867,6 +994,13 @@ function useHint() {
         foundCount++;
         updateStatus();
         updateCell(i, j);
+        const cell = document.querySelector(`[data-row="${i}"][data-col="${j}"]`);
+        if (cell) {
+          cell.classList.remove('hint-flash');
+          void cell.offsetWidth; // 强制重排以重启动画
+          cell.classList.add('hint-flash');
+          setTimeout(() => cell.classList.remove('hint-flash'), 2600);
+        }
         if (navigator.vibrate) navigator.vibrate(50);
         if (foundCount === n) win();
         startHintCooldown();
@@ -1036,6 +1170,7 @@ function showTutorial() {
   tutStep = 0;
   renderTutStep();
   document.getElementById('tutorial-overlay').classList.add('show');
+  document.body.classList.add('tutorial-active');
 }
 
 function renderTutStep() {
@@ -1048,6 +1183,7 @@ function renderTutStep() {
 
 function skipTutorial() {
   document.getElementById('tutorial-overlay').classList.remove('show');
+  document.body.classList.remove('tutorial-active');
   tutorialStep = 0;
   try { localStorage.setItem('findcats_tutorial_done', '1'); } catch(e) {}
   newGame(1);
@@ -1057,11 +1193,15 @@ function tutorialNext() {
   tutStep++;
   if (tutStep >= TUTORIAL_STEPS.length) {
     document.getElementById('tutorial-overlay').classList.remove('show');
+    document.body.classList.remove('tutorial-active');
     tutorialStep = 0;
     try { localStorage.setItem('findcats_tutorial_done', '1'); } catch(e) {}
     // 开始教程关卡
+    onGameReady = () => {
+      showTip('🎯 先找<span style="font-weight:900">只有 1 格</span>的颜色区域，双击那格找到猫猫！', 1);
+      highlightSingleCellRegions();
+    };
     newGame(1);
-    showTip('🎯 先找<span style="font-weight:900">只有 1 格</span>的颜色区域，双击那格找到猫猫！', 1);
     return;
   }
   renderTutStep();
@@ -1079,9 +1219,44 @@ function hideTip() {
   tutorialStep = 0;
 }
 
+function highlightExclusionCells(catR, catC) {
+  // 找出该猫同行、同列、8邻域、同颜色区域的未翻开格子，红色边框脉冲提示可标 ✗
+  const excludeSet = new Set();
+  const reg = grid[catR][catC];
+  for (let j = 0; j < n; j++) excludeSet.add(catR * n + j);   // 同行
+  for (let i = 0; i < n; i++) excludeSet.add(i * n + catC);   // 同列
+  for (let dr = -1; dr <= 1; dr++)                            // 8邻域
+    for (let dc = -1; dc <= 1; dc++) {
+      const nr = catR + dr, nc = catC + dc;
+      if (nr >= 0 && nr < n && nc >= 0 && nc < n) excludeSet.add(nr * n + nc);
+    }
+  for (let i = 0; i < n; i++)                                 // 同颜色区域
+    for (let j = 0; j < n; j++)
+      if (grid[i][j] === reg) excludeSet.add(i * n + j);
+  excludeSet.delete(catR * n + catC);                          // 除去猫本身
+
+  for (const idx of excludeSet) {
+    const r = Math.floor(idx / n), c = idx % n;
+    if (revealed[r][c] || noCat[r][c]) continue;
+    const cell = document.querySelector(`[data-row="${r}"][data-col="${c}"]`);
+    if (cell) {
+      cell.classList.add('exclude-hint');
+    }
+  }
+}
+
 function checkTutorialProgress() {
   if (tutorialStep === 1 && foundCount >= 1) {
-    showTip('👍 没错！接下来<span style="font-weight:900">单击</span>任意格子标记 ✗，排除没有猫猫的格子', 2);
+    // 找到第一只猫，高亮可排除的格子
+    for (let i = 0; i < n; i++) {
+      for (let j = 0; j < n; j++) {
+        if (cats[i][j] && revealed[i][j]) {
+          highlightExclusionCells(i, j);
+          break;
+        }
+      }
+    }
+    showTip('👍 没错！接下来<span style="font-weight:900">单击</span>闪烁的格子标记 ✗，排除没有猫猫的格子', 2);
   } else if (tutorialStep === 2 && noCat.flat().some(Boolean)) {
     showTip('🎯 很好！继续找猫猫，记住规则：<span style="font-weight:900">每行每列每个颜色区域</span>各一只', 3);
   } else if (tutorialStep === 3 && foundCount >= 2) {
@@ -1169,6 +1344,7 @@ document.addEventListener('touchmove', (e) => {
   const dist = Math.hypot(t.clientX - mouseDownX, t.clientY - mouseDownY);
   if (!dragActive && dist > 15) {
     dragActive = true;
+    clearExcludeHints();
     const {row: si, col: sj} = mouseDownCell;
     if (!revealed[si][sj]) {
       noCat[si][sj] = !noCat[si][sj];
