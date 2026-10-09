@@ -32,13 +32,14 @@ button {
   font-size: 0.82rem;
   cursor: pointer;
   font-weight: 700;
+  white-space: nowrap;
   transition: transform 0.1s;
 }
 button:active { transform: scale(0.95); }
-.btn-next { background: #4ecca3; color: #1a1a2e; font-size: 0.95rem; padding: 8px 18px; }
+.btn-next { background: #4ecca3; color: #1a1a2e; }
 .btn-reset { background: #ff6b9d; color: #fff; }
 .btn-retry { background: #ffd700; color: #1a1a2e; }
-.btn-hint { background: #a29bfe; color: #fff; min-width: 140px; }
+.btn-hint { background: #a29bfe; color: #fff; }
 .btn-hint.cooling {
   background: #444; color: #888; cursor: not-allowed;
 }
@@ -173,8 +174,12 @@ button:active { transform: scale(0.95); }
 .message.win { background: #4ecca3; color: #1a1a2e; display: block; }
 .message.lose { background: #e94560; color: #fff; display: block; }
 .message .btn-row {
-  margin-top: 12px;
-  display: flex; gap: 12px; justify-content: center;
+  margin-top: 10px;
+  display: flex; gap: 8px; justify-content: center; flex-wrap: nowrap;
+}
+.message .btn-row button {
+  padding: 8px 16px;
+  font-size: 0.82rem;
 }
 
 .rules-btn {
@@ -182,8 +187,8 @@ button:active { transform: scale(0.95); }
   background: #16213e;
   color: #aaa;
   border: 1px solid #2a2a4a;
-  font-size: 0.78rem;
-  padding: 5px 14px;
+  font-size: 0.82rem;
+  padding: 6px 14px;
 }
 .rules-modal-overlay {
   position: fixed;
@@ -212,8 +217,8 @@ button:active { transform: scale(0.95); }
   width: 100%;
   background: #ff6b9d;
   color: #fff;
-  font-size: 0.95rem;
-  padding: 10px;
+  font-size: 0.82rem;
+  padding: 9px;
 }
 
 /* 新手引导 */
