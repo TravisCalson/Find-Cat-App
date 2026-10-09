@@ -11,29 +11,31 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
   font-family: 'Segoe UI', sans-serif;
   color: #eee;
-  padding: 20px;
+  padding: 8px 12px;
 }
-h1 { font-size: 1.8rem; margin-bottom: 8px; color: #ff6b9d; }
-.subtitle { color: #888; margin-bottom: 16px; font-size: 0.95rem; }
+h1 { font-size: 1.35rem; margin-bottom: 2px; color: #ff6b9d; }
+.subtitle { color: #888; margin-bottom: 6px; font-size: 0.82rem; }
 
 .controls {
-  display: flex; gap: 12px; margin-bottom: 16px; align-items: center; flex-wrap: wrap;
+  display: flex; gap: 8px; margin-bottom: 6px; align-items: center; flex-wrap: wrap;
   justify-content: center;
 }
 button {
-  padding: 10px 24px;
+  padding: 8px 14px;
   border: none;
   border-radius: 8px;
-  font-size: 0.95rem;
+  font-size: 0.82rem;
   cursor: pointer;
   font-weight: 700;
   transition: transform 0.1s;
 }
 button:active { transform: scale(0.95); }
-.btn-next { background: #4ecca3; color: #1a1a2e; font-size: 1.1rem; padding: 14px 32px; }
+.btn-next { background: #4ecca3; color: #1a1a2e; font-size: 0.95rem; padding: 8px 18px; }
 .btn-reset { background: #ff6b9d; color: #fff; }
 .btn-retry { background: #ffd700; color: #1a1a2e; }
 .btn-hint { background: #a29bfe; color: #fff; min-width: 140px; }
@@ -42,23 +44,31 @@ button:active { transform: scale(0.95); }
 }
 
 .status-bar {
-  display: flex; gap: 20px; margin-bottom: 16px;
-  font-size: 1.1rem; align-items: center; flex-wrap: wrap;
+  display: flex; gap: 10px; margin-bottom: 6px;
+  font-size: 0.85rem; align-items: center; flex-wrap: wrap;
   justify-content: center;
 }
 .status-bar .item {
-  display: flex; align-items: center; gap: 6px;
+  display: flex; align-items: center; gap: 4px;
 }
 .status-bar .val {
-  background: #16213e; padding: 6px 14px; border-radius: 8px;
-  font-weight: 700; min-width: 50px; text-align: center;
+  background: #16213e; padding: 3px 8px; border-radius: 6px;
+  font-weight: 700; min-width: 36px; text-align: center;
 }
 .status-bar .level-val {
-  background: #ff6b9d; color: #fff; font-size: 1.15rem;
+  background: #ff6b9d; color: #fff; font-size: 0.9rem;
 }
-.lives { font-size: 1.3rem; }
+.lives { font-size: 1.05rem; }
 .lives .lost { opacity: 0.25; }
 
+#board-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  width: 100%;
+}
 #board {
   display: inline-grid;
   gap: 3px;
@@ -145,14 +155,20 @@ button:active { transform: scale(0.95); }
 }
 
 .message {
-  margin-top: 16px;
-  padding: 16px 28px;
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 500;
+  padding: 12px 22px;
   border-radius: 12px;
-  font-size: 1.15rem;
+  font-size: 1.05rem;
   font-weight: 700;
   display: none;
   text-align: center;
-  line-height: 1.8;
+  line-height: 1.7;
+  max-width: 92vw;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.5);
 }
 .message.win { background: #4ecca3; color: #1a1a2e; display: block; }
 .message.lose { background: #e94560; color: #fff; display: block; }
@@ -161,17 +177,44 @@ button:active { transform: scale(0.95); }
   display: flex; gap: 12px; justify-content: center;
 }
 
-.rules {
-  margin-top: 20px;
+.rules-btn {
+  margin-top: 6px;
   background: #16213e;
-  padding: 16px 24px;
-  border-radius: 8px;
-  max-width: 500px;
-  font-size: 0.85rem;
   color: #aaa;
-  line-height: 1.8;
+  border: 1px solid #2a2a4a;
+  font-size: 0.78rem;
+  padding: 5px 14px;
 }
-.rules b { color: #ff6b9d; }
+.rules-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 6000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+.rules-modal-overlay.show { display: flex; }
+.rules-modal {
+  background: #16213e;
+  border: 2px solid #ff6b9d;
+  border-radius: 14px;
+  padding: 22px 26px;
+  max-width: 380px;
+  width: 88%;
+  color: #ccc;
+  font-size: 0.92rem;
+  line-height: 1.9;
+}
+.rules-modal b { color: #ff6b9d; }
+.rules-modal .close-btn {
+  margin-top: 14px;
+  width: 100%;
+  background: #ff6b9d;
+  color: #fff;
+  font-size: 0.95rem;
+  padding: 10px;
+}
 
 /* 新手引导 */
 #tutorial-overlay {
@@ -352,8 +395,7 @@ body.tutorial-active .controls,
 body.tutorial-active .status-bar,
 body.tutorial-active #board,
 body.tutorial-active .message,
-body.tutorial-active .rules,
-body.tutorial-active .footer {
+body.tutorial-active .rules-btn {
   display: none;
 }
 </style>
@@ -376,7 +418,7 @@ body.tutorial-active .footer {
   <div class="item">⏱️ <div class="val" id="timer">0</div></div>
 </div>
 
-<div id="board"></div>
+<div id="board-wrap"><div id="board"></div></div>
 
 <div class="message" id="message"></div>
 
@@ -398,14 +440,19 @@ body.tutorial-active .footer {
   </div>
 </div>
 
-<div class="rules">
-  <b>规则：</b><br>
-  • 每行、每列各有一只猫猫<br>
-  • 每种颜色区域各有一只猫猫<br>
-  • 猫猫周围 8 格内不能有其他猫猫<br>
-  <b>操作：</b><br>
-  • <b>双击</b> = 确认这里藏了猫猫（猜错扣一条命）<br>
-  • <b>单击</b> = 标记这里没有猫猫（可取消）
+<button class="rules-btn" onclick="document.getElementById('rulesModal').classList.add('show')">📖 规则 / 操作</button>
+
+<div class="rules-modal-overlay" id="rulesModal" onclick="if(event.target===this)this.classList.remove('show')">
+  <div class="rules-modal">
+    <b>规则：</b><br>
+    • 每行、每列各有一只猫猫<br>
+    • 每种颜色区域各有一只猫猫<br>
+    • 猫猫周围 8 格内不能有其他猫猫<br>
+    <b>操作：</b><br>
+    • <b>双击</b> = 确认这里藏了猫猫（猜错扣一条命）<br>
+    • <b>单击</b> = 标记这里没有猫猫（可取消）
+    <button class="close-btn" onclick="document.getElementById('rulesModal').classList.remove('show')">知道了</button>
+  </div>
 </div>
 
 <script>
@@ -591,6 +638,9 @@ function onPopState(e) {
 // 拦截返回键（Android 返回键 / 浏览器后退）
 history.pushState(null, '', location.href);
 window.addEventListener('popstate', onPopState);
+
+// 屏幕旋转/窗口变化时重新渲染棋盘
+window.addEventListener('resize', () => { if (n) render(); });
 
 // Capacitor @capacitor/app 插件：监听 Android 硬件返回键
 if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App
@@ -925,11 +975,14 @@ function countSolutions(g, size, maxCount) {
 
 function render() {
   const boardEl = document.getElementById('board');
-  // 自适应格子大小，确保不超出屏幕
-  const maxW = Math.min(window.innerWidth - 32, 600);
+  // 自适应格子大小：从 board-wrap 实际可用空间计算，确保不滚动
+  const wrap = document.getElementById('board-wrap');
+  const maxW = Math.min(wrap.clientWidth - 8, 600);
+  const maxH = wrap.clientHeight - 8;
   const gap = 3, pad = 16;
-  const cellSize = Math.floor((maxW - pad - gap * (n - 1)) / n);
-  const cs = Math.max(28, Math.min(cellSize, n <= 6 ? 52 : n <= 8 ? 46 : 42));
+  const csByW = Math.floor((maxW - pad - gap * (n - 1)) / n);
+  const csByH = Math.floor((maxH - pad - gap * (n - 1)) / n);
+  const cs = Math.max(24, Math.min(csByW, csByH, n <= 6 ? 52 : n <= 8 ? 46 : 42));
   boardEl.style.gridTemplateColumns = `repeat(${n}, ${cs}px)`;
   boardEl.innerHTML = '';
 
