@@ -649,7 +649,8 @@ function newGame(lv) {
   setTimeout(() => {
     n = getGridSize(lv);
     cats = null;
-    const deadline = Date.now() + 8000;
+    // 大网格搜索空间大，给更多时间找唯一解
+    const deadline = Date.now() + (n >= 8 ? 20000 : 8000);
     while (Date.now() < deadline) {
       generateRegions();
       const sols = countSolutions(grid, n, 2);
@@ -660,11 +661,23 @@ function newGame(lv) {
       }
     }
     if (!cats || cats.length !== n) {
+      // 回退：找任意合法解（countSolutions 强制行/列/区域/8邻域约束）
+      const anySols = countSolutions(grid, n, 1);
       cats = Array.from({length: n}, () => Array(n).fill(false));
-      const perm = [];
-      for (let c = 1; c < n; c += 2) perm.push(c);
-      for (let c = 0; c < n; c += 2) perm.push(c);
-      for (let r = 0; r < n; r++) cats[r][perm[r]] = true;
+      if (anySols.length > 0) {
+        for (const [r, c] of anySols[0]) cats[r][c] = true;
+      } else {
+        // 极端情况（区域布局无解）：重新生成区域直到有解
+        const deadline2 = Date.now() + 5000;
+        while (Date.now() < deadline2) {
+          generateRegions();
+          const s2 = countSolutions(grid, n, 1);
+          if (s2.length > 0) {
+            for (const [r, c] of s2[0]) cats[r][c] = true;
+            break;
+          }
+        }
+      }
     }
     levelHistory[lv] = {
       n: n,
