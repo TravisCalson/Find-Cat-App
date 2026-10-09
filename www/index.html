@@ -661,22 +661,52 @@ function newGame(lv) {
       }
     }
     if (!cats || cats.length !== n) {
-      // 回退：找任意合法解（countSolutions 强制行/列/区域/8邻域约束）
-      const anySols = countSolutions(grid, n, 1);
       cats = Array.from({length: n}, () => Array(n).fill(false));
+      let found = false;
+      // 回退1：找任意合法解（countSolutions 强制行/列/区域/8邻域约束）
+      const anySols = countSolutions(grid, n, 1);
       if (anySols.length > 0) {
         for (const [r, c] of anySols[0]) cats[r][c] = true;
-      } else {
-        // 极端情况（区域布局无解）：重新生成区域直到有解
+        found = true;
+      }
+      // 回退2：重新生成区域直到有解
+      if (!found) {
         const deadline2 = Date.now() + 5000;
         while (Date.now() < deadline2) {
           generateRegions();
           const s2 = countSolutions(grid, n, 1);
           if (s2.length > 0) {
             for (const [r, c] of s2[0]) cats[r][c] = true;
+            found = true;
             break;
           }
         }
+      }
+      // 回退3：从合法猫排列构造区域，保证行/列/区域/邻域约束
+      if (!found) {
+        const perm = [];
+        for (let c = 1; c < n; c += 2) perm.push(c);
+        for (let c = 0; c < n; c += 2) perm.push(c);
+        for (let r = 0; r < n; r++) cats[r][perm[r]] = true;
+        grid = Array.from({length: n}, () => Array(n).fill(-1));
+        const dirs4 = [[-1,0],[1,0],[0,-1],[0,1]];
+        const queue = [];
+        for (let k = 0; k < n; k++) {
+          grid[k][perm[k]] = k;
+          queue.push([k, perm[k], k]);
+        }
+        let qi = 0;
+        while (qi < queue.length) {
+          const [r, c, k] = queue[qi++];
+          const nbs = dirs4.map(([dr, dc]) => [r + dr, c + dc]).sort(() => Math.random() - 0.5);
+          for (const [nr, nc] of nbs) {
+            if (nr >= 0 && nr < n && nc >= 0 && nc < n && grid[nr][nc] === -1) {
+              grid[nr][nc] = k;
+              queue.push([nr, nc, k]);
+            }
+          }
+        }
+        regionColors = Array.from({length: n}, (_, k) => k % COLORS.length);
       }
     }
     levelHistory[lv] = {
